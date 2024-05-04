@@ -1,0 +1,12 @@
+services:
+  dnsmasq:
+    image: jpillora/dnsmasq
+    container_name: dnsmasq
+    volumes:
+      - ./dnsmasq.conf:/etc/dnsmasq.conf
+    ports:
+     - "53:53/udp"
+    deploy:
+      resources:
+        limits:
+          memory: 100M
