@@ -20,3 +20,15 @@ sudo docker compose up
             - 127.0.0.1
             - ::1
     ```
+
+### Checking DNS on mac
+
+use `dns-sd` to verify dns resolution
+```shell
+dns-sd -G v4v6 assistant.home
+```
+
+reset DNS cache
+```shell
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+```
