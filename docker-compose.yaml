@@ -25,6 +25,22 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.homeassistant.rule=Host(`assistant.home`)"
       - "traefik.http.services.homeassistant.loadbalancer.server.port=8123"
+    depends_on:
+      - homeassistant_db
+    environment:
+      RECORDER_DB_URL: mysql://homeassistant:${MYSQL_PASSWORD}@homeassistant_db/homeassistant?charset=utf8
+
+  homeassistant_db:
+    container_name: homeassistant_db
+    image: mariadb
+    restart: 'unless-stopped'
+    environment:
+      MARIADB_RANDOM_ROOT_PASSWORD: true
+      MYSQL_DATABASE: homeassistant
+      MYSQL_USER: homeassistant
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    volumes:
+      - ./home-assistant/store/mariadb:/var/lib/mysql
 
   jellyfin:
     image: jellyfin/jellyfin
