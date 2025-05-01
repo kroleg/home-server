@@ -1,16 +1,31 @@
+volumes:
+  dnsmasq-logs:
+
 services:
   dnsmasq:
     image: jpillora/dnsmasq
     container_name: dnsmasq
     volumes:
       - ./dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
+      - dnsmasq-logs:/var/log
     ports:
      - "53:53/udp"
+     - "5353:5353/udp"
     restart: 'unless-stopped'
     deploy:
       resources:
         limits:
           memory: 100M
+
+  dnslogwatcher:
+    build: ./dns-log-watcher
+    volumes:
+      - dnsmasq-logs:/var/log  # Mount same log volume
+    environment:
+      LOG_FILE: /var/log/dnsmasq.log
+    depends_on:
+      - dnsmasq
+    restart: unless-stopped
 
   homeassistant:
     container_name: homeassistant
